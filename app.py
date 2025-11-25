@@ -13,14 +13,16 @@ st.set_page_config(page_title="Le Mentor Miroir : La Vérité, Rien que la Véri
 st.title("💡 Le Mentor Miroir : La Vérité, Rien que la Vérité.")
 st.caption("Raconte-moi ton blocage et je te dirai ce que tu te caches.")
 
-# --- Initialisation et Vérification ---
-# Nous cherchons la clé uniquement dans l'environnement (Environment Variables)
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+# --- Vérification et Initialisation (Code Final Simplifié) ---
+try:
+    # Tente de lire directement le secret, comme un dictionnaire
+    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 
-if not GEMINI_API_KEY:
-    st.error("ERREUR CRITIQUE : La variable d'environnement 'GEMINI_API_KEY' n'a pas été configurée correctement. Veuillez vérifier la section 'Environment Variables' dans les paramètres de Streamlit Cloud.")
+except KeyError:
+    st.error("FATAL : La clé 'GEMINI_API_KEY' n'est pas accessible. Réessayez de la supprimer et de la sauvegarder dans les Secrets de Streamlit (le format TOML).")
     st.stop()
-    
+
+# Le reste du code d'initialisation (client, model) reste le même...
 try:
     client = genai.Client(api_key=GEMINI_API_KEY)
     model = 'gemini-2.5-pro' 
@@ -56,3 +58,4 @@ if st.button("Obtenir sa Vérité"):
             st.markdown("---")
 
             st.info("Cette analyse vous a secoué ? Si vous êtes prêt(e) à prendre une heure pour un échange humain et sans filtre, réservez une session (Lien vers ton service).")
+
